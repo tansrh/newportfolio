@@ -1,0 +1,52 @@
+.buttonRow {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.date {
+    color: #888;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+    z-index: 13;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border: 1px solid black;
+}
+
+.image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: #888;
+    margin-bottom: 1.5rem;
+}
+
+.content {
+    font-size: 1.1rem;
+    color: #444;
+    line-height: 1.7;
+}

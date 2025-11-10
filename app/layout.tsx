@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar/Navbar";
+import Providers from "../components/Providers";
+import Modal from "@/components/Modal/Modal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,15 +22,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  interception
 }: Readonly<{
   children: React.ReactNode;
+  interception: React.ReactNode;
 }>) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+
+        <Providers>
+          <Navbar />
+          {children}
+          {interception}
+          <Modal />
+        </Providers>
       </body>
     </html>
   );

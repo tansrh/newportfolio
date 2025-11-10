@@ -1,0 +1,75 @@
+"use client";
+import { use, useState } from "react";
+import { usePathname } from "next/navigation";
+import styles from "./Navbar.module.scss";
+import Link from "next/link";
+import { openModal } from "@/store/slices/modalSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/utils/apiRequest';
+import { logout } from "@/store/slices/authSlice";
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const isUserLoggedIn = useSelector((state: any) => state.auth.loggedIn);
+
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest('/api/logout', 'POST');
+    },
+    onSuccess: () => {
+      // Optionally clear localStorage, update redux, redirect, etc.
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
+      dispatch(logout());
+      window.location.reload();
+    },
+    onError: (err: any) => {
+      alert(err.message || 'Logout failed');
+    }
+  });
+  return (
+    <nav className={styles.navbar}>
+      <div style={{ display: "flex", justifyContent: 'space-between', width: '100%' }}>
+        <ul className={styles.menu}>
+          <li className={pathname === "/" ? styles.active : ""}><Link href="/">About Me</Link></li>
+          <li className={pathname === "/blogs" ? styles.active : ""}><Link href="/blogs">Blogs</Link></li>
+        </ul>
+        <ul className={styles.menu}>
+          {
+            isUserLoggedIn ? (
+              <li><span onClick={() => logoutMutation.mutate()} style={{ cursor: 'pointer' }}>Logout</span></li>
+            ) : (
+              <li onClick={() => { dispatch(openModal({ content: 'Login' })) }} ><span>Login</span></li>
+            )
+          }
+        </ul>
+      </div>
+      <button
+        className={styles.hamburger}
+        onClick={() => setOpen((prev) => !prev)}
+        aria-label="Toggle menu"
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+      {open && (
+        <div className={styles.dropdown}>
+          <ul>
+            <li className={pathname === "/" ? styles.activeDropdown : ""}><Link href="/">About Me</Link></li>
+            <li className={pathname === "/blogs" ? styles.activeDropdown : ""}><Link href="/blogs">Blogs</Link></li>
+            {isUserLoggedIn ? (
+              <li><span onClick={() => logoutMutation.mutate()} style={{ cursor: 'pointer' }}>Logout</span></li>
+            ) : (
+              <li onClick={() => { dispatch(openModal({ content: 'Login' })) }} ><span>Login</span></li>
+            )}
+          </ul>
+        </div>
+      )}
+    </nav>
+  );
+}

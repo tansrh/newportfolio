@@ -1,0 +1,13 @@
+
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.heading {
+  @include heading;
+}
+.section {
+  @include card;
+}
+.editFields {
+@include editFields;
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Message</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        .content {
+            padding: 20px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9rem;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            New Message Received
+        </div>
+        <div class="content">
+            <p><strong>Name:</strong> {{NAME}}</p>
+            <p><strong>Email:</strong> {{EMAIL}}</p>
+            <p><strong>Message:</strong></p>
+            <p>{{MESSAGE}}</p>
+        </div>
+        <div class="footer">
+            This email was sent from the contact form on your website.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+
+
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.heading {
+    @include heading;
+}
+
+.section {
+    @include card;
+}
+
+.editFields {
+    @include editFields;
+}
+
+.editItem {
+    @include editItem;
+}
+.messageLink {
+    color: #4F8EF7;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.messageLink:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}

@@ -1,0 +1,40 @@
+
+
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.heading {
+  @include heading;
+}
+.section {
+  @include card;
+}
+.editFields {
+@include editFields;
+}
+
+.editItem {
+  @include editItem;
+}
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #222;
+  background: #222;
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #222;
+  background: #222;
+  color: #fff;
+  font-size: 1rem;
+  resize: vertical;
+  margin-bottom: 0.5rem;
+}

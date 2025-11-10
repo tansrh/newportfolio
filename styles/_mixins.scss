@@ -1,0 +1,21 @@
+@mixin editItem {
+  margin-bottom: 4rem;
+}
+@mixin card {
+  background: $color-bg-section;
+  border-radius: $radius-section;
+  padding: 2rem;
+  box-shadow: $shadow-section;
+  border: 1px solid $color-border;
+}
+
+@mixin heading {
+  font-weight: bold;
+  font-size: $font-heading;
+  margin-bottom: 1rem;
+}
+@mixin editFields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
