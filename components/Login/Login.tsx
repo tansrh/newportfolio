@@ -12,13 +12,14 @@ import { setLocalStorage } from '@/utils/localStorage';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '@/store/slices/modalSlice';
 import { login } from '@/store/slices/authSlice';
+import { useToast } from '../ToastProvider';
 
 export default function Login() {
   const dispatch = useDispatch();
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors }, setValue } = useFormContext();
-
+  const { addToast } = useToast();
   // React Query mutation for login
   const loginMutation = useMutation({
     mutationFn: (email: string) => apiRequest('/api/login', 'POST', { email }),
@@ -26,9 +27,11 @@ export default function Login() {
       setStep('otp');
       setValue('otp', '');
       setErrorMsg(null);
+      addToast('OTP sent to your email');
     },
     onError: (error: any) => {
       setErrorMsg(error?.message || 'Failed to send OTP. Please try again.');
+      addToast(error?.message || 'Failed to send OTP. Please try again.');
     },
   });
 
@@ -37,15 +40,16 @@ export default function Login() {
     mutationFn: (payload: { email: string; otp: string }) =>
       apiRequest('/api/verify', 'POST', payload),
     onSuccess: (data) => {
-      console.log('Login successful', data);
       setErrorMsg(null);
       setLocalStorage('authToken', data.authToken);
       setLocalStorage('refreshToken', data.refreshToken);
       dispatch(closeModal());
       dispatch(login({ authToken: data.authToken, refreshToken: data.refreshToken }));
+      addToast('Logged in successfully!');
     },
     onError: (error: any) => {
       setErrorMsg(error?.message || 'OTP verification failed. Please try again.');
+      addToast(error?.message || 'OTP verification failed. Please try again.');
     },
   });
 

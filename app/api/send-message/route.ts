@@ -6,7 +6,7 @@ export async function POST(req: Request) {
         const { name, email, message } = await req.json();
 
         await sendEmail({
-            to: process.env.CONTACT_EMAIL || 'default@example.com',
+            to: process.env.CLIENT_EMAIL || 'default@example.com',
             subject: 'New Message Received',
             templateName: 'message.html',
             replacements: {

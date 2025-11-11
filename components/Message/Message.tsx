@@ -7,6 +7,7 @@ import ErrorMessage from '../Error/ErrorMessage';
 import styles from './Message.module.scss';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '@/store/slices/modalSlice';
+import { useToast } from '../ToastProvider';
 
 interface MessageFormData {
     name: string;
@@ -15,9 +16,10 @@ interface MessageFormData {
 }
 
 export default function Message() {
-    const { register, handleSubmit, formState: { errors }, reset } = useFormContext<MessageFormData>();
+    const { register, handleSubmit, getValues, formState: { errors }, reset, setValue } = useFormContext<MessageFormData>();
     const [statusMessage, setStatusMessage] = useState<string | null>(null);
     const dispatch = useDispatch();
+    const { addToast } = useToast();
      useEffect(()=>{
          if (statusMessage) {
              const timer = setTimeout(() => {
@@ -39,12 +41,16 @@ export default function Message() {
 
             if (response.ok) {
                 setStatusMessage('Message sent successfully!');
-                reset();
+                addToast('Message sent successfully!');
             } else {
                 setStatusMessage('Failed to send message. Please try again.');
+                addToast('Failed to send message. Please try again.');
             }
+            reset();
         } catch (error) {
             setStatusMessage('An unexpected error occurred. Please try again.');
+            addToast('An unexpected error occurred. Please try again.');
+            reset();
         }
     };
 
@@ -75,11 +81,13 @@ export default function Message() {
             <>
                 <CommonTextareaInput
                     label="Message"
+                    value={getValues("message")}
                     placeholder="Your message"
                     {...register('message', {
                         required: 'Message is required',
                         minLength: { value: 10, message: 'Message must be at least 10 characters' }
                     })}
+                    setValue={setValue}
                 />
                 {errors.message && <ErrorMessage message={typeof errors.message.message === 'string' ? errors.message.message : 'Invalid message'} />}
             </>

@@ -8,13 +8,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/utils/apiRequest';
 import { logout } from "@/store/slices/authSlice";
+import Error from "@/app/error";
+import { useToast } from "../ToastProvider";
 
 export default function Navbar() {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const isUserLoggedIn = useSelector((state: any) => state.auth.loggedIn);
-
+  const { addToast } = useToast();
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -25,10 +27,11 @@ export default function Navbar() {
       localStorage.removeItem('authToken');
       localStorage.removeItem('refreshToken');
       dispatch(logout());
+      addToast("Logged out successfully");
       window.location.reload();
     },
     onError: (err: any) => {
-      alert(err.message || 'Logout failed');
+      addToast(err.message || "Logout failed");
     }
   });
   return (

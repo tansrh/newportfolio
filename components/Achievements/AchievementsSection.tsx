@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function AchievementsSection({ data, editMode }: Props) {
-  const { control, register, formState: { errors } } = useFormContext();
+  const { control, register, formState: { errors }, getValues } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'achievements'
@@ -31,6 +31,7 @@ export default function AchievementsSection({ data, editMode }: Props) {
                 <>
                   <CommonTextInput
                     label="Achievement Title"
+                    defaultValue={getValues(`achievements.${idx}.title`)}
                     placeholder="Achievement Title"
                     {...register(`achievements.${idx}.title`, {
                       validate: (value: string) => {
@@ -49,6 +50,7 @@ export default function AchievementsSection({ data, editMode }: Props) {
                   <CommonTextInput
                     label="Year"
                     placeholder="Year"
+                    defaultValue={getValues(`achievements.${idx}.year`)}
                     {...register(`achievements.${idx}.year`, {
                       validate: (value: string) => {
                         for (const test of achievementsValidationConfig.year) {
@@ -66,6 +68,7 @@ export default function AchievementsSection({ data, editMode }: Props) {
                   <CommonTextInput
                     label="Description"
                     placeholder="Description"
+                    defaultValue={getValues(`achievements.${idx}.description`)}
                     {...register(`achievements.${idx}.description`, {
                       validate: (value: string) => {
                         for (const test of achievementsValidationConfig.description) {

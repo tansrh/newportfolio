@@ -4,7 +4,7 @@ import styles from './BlogCard.module.scss';
 import type { BlogData } from '../../store/slices/blogsSlice';
 import CommonImage from '../common/CommonImage';
 import ImageWithFallback from '../common/ImageWithFallback';
-
+import truncate from 'html-truncate';
 interface BlogCardProps {
   blog: BlogData;
   idx: number;
@@ -22,7 +22,12 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, idx, onClick }) => (
       <div className={styles.blogContent}>
         <h2 className={styles.blogTitle}>{blog.title}</h2>
         <h4 className={styles.blogSubtitle}>{blog.subtitle}</h4>
-        <p className={styles.blogDescription}>{blog.content.slice(0, 100)}...</p>
+        <p
+          className={styles.blogDescription}
+          dangerouslySetInnerHTML={{
+            __html: truncate(blog.content, 100), // Truncate to 100 characters while preserving valid HTML
+          }}
+        />
       </div>
     </Link>
   </div>

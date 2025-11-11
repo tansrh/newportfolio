@@ -15,22 +15,27 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/utils/apiRequest';
 import { BlogData } from "@/store/slices/blogsSlice";
 import Loading from "./loading";
+import Error from "@/app/error";
+import { useEffect, useMemo } from "react";
+import { useToast } from "@/components/ToastProvider";
 
 const useSavePortfolio = () => {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const { addToast } = useToast();
 
   return useMutation({
     mutationFn: async (portfolioData: BlogData) => {
       return apiRequest('/api/portfolio', 'PUT', portfolioData);
     },
     onSuccess: () => {
-      console.log('Portfolio saved successfully');
       queryClient.invalidateQueries({ queryKey: ['portfolio'] }); // Corrected query key type
       dispatch(setEditMode(false));
+      addToast("Portfolio saved successfully!");
     },
     onError: (error) => {
-      console.error('Error saving portfolio:', error);
+      addToast(error.message || "Error saving portfolio");
+      return <Error message={error.message || "Error saving portfolio"} />;
     },
   });
 };
@@ -46,19 +51,25 @@ export default function Home() {
       return response.portfolio;
     },
   });
-    const defaultPortfolio = {
+  const defaultPortfolio: any = useMemo(() => ({
     about: {},
     experience: [],
     achievements: [],
     contact: [],
     projects: [],
-  };
+  }), []);
 
-  const portfolioData =  portfolio ?? defaultPortfolio; 
+  // const portfolioData: any = defaultPortfolio;
 
   const methods = useForm<BlogData>({
-    defaultValues: portfolioData,
+    defaultValues: defaultPortfolio,
   });
+
+  useEffect(() => {
+    if (!isLoading && portfolio) {
+      methods.reset(portfolio); 
+    }
+  }, [isLoading, portfolio, methods]);
 
   const savePortfolioMutation = useSavePortfolio();
 
@@ -66,19 +77,20 @@ export default function Home() {
     savePortfolioMutation.mutate(data);
 
   });
-  const onDiscard = ()=>{
+  const onDiscard = () => {
     dispatch(setEditMode(false));
     methods.reset();
   }
 
 
   if (isLoading) {
-    return <Loading/>
+    return <Loading />
   }
 
   if (error) {
-    return <div>Error loading portfolio.</div>;
+    return <Error message="Failed to load portfolio data." />;
   }
+
   return (
     <main className="min-h-screen w-full font-sans flex justify-center bg-gray-100">
       <FormProvider {...methods}>
@@ -100,11 +112,11 @@ export default function Home() {
               <div className={styles.noPortfolio}>No portfolio data available.</div>
             ) :
               <>
-                <AboutSection data={portfolioData.about} editMode={editMode} />
-                <ExperienceSection data={portfolioData.experience} editMode={editMode} />
-                <AchievementsSection data={portfolioData.achievements} editMode={editMode} />
-                <ContactSection data={portfolioData.contact} editMode={editMode} />
-                <ProjectsSection data={portfolioData.projects} editMode={editMode} />
+                <AboutSection data={portfolio.about} editMode={editMode} />
+                <ExperienceSection data={portfolio.experience} editMode={editMode} />
+                <AchievementsSection data={portfolio.achievements} editMode={editMode} />
+                <ContactSection data={portfolio.contact} editMode={editMode} />
+                <ProjectsSection data={portfolio.projects} editMode={editMode} />
               </>
           }
 

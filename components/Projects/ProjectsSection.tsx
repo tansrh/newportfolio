@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function ProjectsSection({ data, editMode }: Props) {
-    const { control, register, formState: { errors } } = useFormContext();
+    const { control, register, formState: { errors }, getValues, setValue } = useFormContext();
     const { fields, append, remove } = useFieldArray({
         control,
         name: 'projects'
@@ -39,6 +39,7 @@ export default function ProjectsSection({ data, editMode }: Props) {
                                 <CommonTextInput
                                     label="Project Title"
                                     placeholder="Project Title"
+                                    defaultValue={getValues(`projects.${idx}.title`)}
                                     {...register(`projects.${idx}.title`, {
                                         validate: (value: string) => {
                                             for (const test of projectsValidationConfig.title) {
@@ -54,6 +55,7 @@ export default function ProjectsSection({ data, editMode }: Props) {
                                 <CommonTextareaInput
                                     label="Project Description"
                                     placeholder="Project Description"
+                                    defaultValue={getValues(`projects.${idx}.description`)}
                                     {...register(`projects.${idx}.description`, {
                                         validate: (value: string) => {
                                             for (const test of projectsValidationConfig.description) {
@@ -62,6 +64,7 @@ export default function ProjectsSection({ data, editMode }: Props) {
                                             return true;
                                         }
                                     })}
+                                    setValue={setValue}
                                 />
                                 {Array.isArray(errors.projects) && errors.projects[idx]?.description && (
                                     <span style={{ color: 'red', fontSize: '0.9rem' }}>{(errors.projects[idx] as any).description.message}</span>
@@ -69,6 +72,7 @@ export default function ProjectsSection({ data, editMode }: Props) {
                                 <CommonTextInput
                                     label="Project Link (URL)"
                                     placeholder="Project Link (URL)"
+                                    defaultValue={getValues(`projects.${idx}.link`)}
                                     {...register(`projects.${idx}.link`, {
                                         validate: (value: string) => {
                                             for (const test of projectsValidationConfig.link) {

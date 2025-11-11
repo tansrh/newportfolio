@@ -22,7 +22,6 @@ export async function sendEmail({ to, subject, templateName, replacements, from 
   });
 
   // Send email with error handling
-  console.log("Sending email to:", to);
   try {
     const info = await transporter.sendMail({
       from: from || process.env.BREVO_SMTP_FROM,
@@ -30,7 +29,6 @@ export async function sendEmail({ to, subject, templateName, replacements, from 
       subject,
       html,
     });
-    console.log("Email sent:", info);
   } catch (error) {
     console.error("Error sending email:", error);
     throw error;

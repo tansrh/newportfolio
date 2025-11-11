@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function ExperienceSection({ data, editMode }: Props) {
-    const { control, register, formState: { errors } } = useFormContext();
+    const { control, register, formState: { errors }, getValues } = useFormContext();
     const { fields, append, remove } = useFieldArray({
         control,
         name: 'experience'
@@ -36,6 +36,7 @@ export default function ExperienceSection({ data, editMode }: Props) {
                             register={register}
                             remove={remove}
                             control={control}
+                            getValues={getValues}
                         />
                     ))}
                     <CommonButton type="button" style={{ marginTop: '1rem' }} onClick={() => append({ organisation: '', designation: '', from: '', to: '', isCurrent: false, description: '' })}>
@@ -62,9 +63,10 @@ interface ExperienceItemProps {
     register: any;
     remove: (idx: number) => void;
     control: any;
+    getValues: any;
 }
 
-function ExperienceItem({ idx, errors, register, remove, control }: ExperienceItemProps) {
+function ExperienceItem({ idx, errors, register, remove, control, getValues }: ExperienceItemProps) {
     const isCurrent = useWatch({ control, name: `experience.${idx}.isCurrent` });
     return (
         <div key={idx} className={styles.editItem}>
@@ -73,6 +75,7 @@ function ExperienceItem({ idx, errors, register, remove, control }: ExperienceIt
                     <CommonTextInput
                         label="Organisation"
                         placeholder="Organisation"
+                        defaultValue={getValues(`experience.${idx}.organisation`)}
                         {...register(`experience.${idx}.organisation`, {
                             validate: (value: string) => {
                                 for (const test of experienceValidationConfig.organisation) {
@@ -90,6 +93,7 @@ function ExperienceItem({ idx, errors, register, remove, control }: ExperienceIt
                     <CommonTextInput
                         label="Designation"
                         placeholder="Designation"
+                        defaultValue={getValues(`experience.${idx}.designation`)}
                         {...register(`experience.${idx}.designation`, {
                             validate: (value: string) => {
                                 for (const test of experienceValidationConfig.designation) {
@@ -105,6 +109,7 @@ function ExperienceItem({ idx, errors, register, remove, control }: ExperienceIt
                 </>
                 <CommonDateInput
                     label='From:'
+                    defaultValue={getValues(`experience.${idx}.from`)}
                     {...register(`experience.${idx}.from`, {
                         validate: (value: string) => {
                             for (const test of experienceValidationConfig.from) {
@@ -120,6 +125,7 @@ function ExperienceItem({ idx, errors, register, remove, control }: ExperienceIt
                 {!isCurrent && (
                     <CommonDateInput
                         label='To:'
+                        defaultValue={getValues(`experience.${idx}.to`)}
                         {...register(`experience.${idx}.to`)}
                     />
                 )}
@@ -128,6 +134,7 @@ function ExperienceItem({ idx, errors, register, remove, control }: ExperienceIt
                     <CommonTextInput
                         label="Role Description"
                         placeholder="Role Description"
+                        defaultValue={getValues(`experience.${idx}.description`)}
                         {...register(`experience.${idx}.description`, {
                             validate: (value: string) => {
                                 for (const test of experienceValidationConfig.description) {

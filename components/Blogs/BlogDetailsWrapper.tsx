@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '@/store/slices/modalSlice';
 import ImageWithFallback from '../common/ImageWithFallback';
+import { useToast } from '../ToastProvider';
 
 interface BlogDetailsWrapperProps {
     blog: BlogData;
@@ -26,7 +27,7 @@ function useBlogMutation(): any {
     const router = useRouter();
     const dispatch = useDispatch();
     const queryClient = useQueryClient();
-
+    const { addToast } = useToast();
     return useMutation({
         mutationFn: async (variables: { type: 'create' | 'update' | 'delete'; data: any }) => {
             const { type, data } = variables;
@@ -45,6 +46,10 @@ function useBlogMutation(): any {
             queryClient.invalidateQueries({ queryKey: ['blogs'] }); // Corrected the query key type
             dispatch(closeModal());
             router.push('/blogs');
+            addToast('Blog operation successful!');
+        },
+        onError: (error: any) => {
+            addToast(error.message || 'Blog operation failed. Please try again.');
         }
     });
 }
@@ -93,10 +98,10 @@ const BlogDetailsWrapper: React.FC<BlogDetailsWrapperProps> = ({ blog, edit = fa
 };
 
 export function BlogDetailsEditForm({ isNewBlog }: BlogDetailsEditFormProps) {
-    const { register, formState: { errors }, handleSubmit, reset, getValues } = useFormContext<BlogData>();
+    const { register, getValues,  formState: { errors }, handleSubmit, reset, setValue } = useFormContext<BlogData>();
     const router = useRouter();
     const dispatch = useDispatch();
-
+    
     if (!blogMutation) {
         blogMutation = useBlogMutation();
     }
@@ -168,6 +173,7 @@ export function BlogDetailsEditForm({ isNewBlog }: BlogDetailsEditFormProps) {
             <>
                 <CommonTextareaInput
                     label="Description"
+                    value={getValues('content')}
                     placeholder="Description"
                     {...register('content', {
                         validate: (value: string | undefined) => {
@@ -177,6 +183,7 @@ export function BlogDetailsEditForm({ isNewBlog }: BlogDetailsEditFormProps) {
                             return true;
                         }
                     })}
+                    setValue={setValue}
                 />
                 {errors.content && <ErrorMessage message={errors.content.message} />}
             </>

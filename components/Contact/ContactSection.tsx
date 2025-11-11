@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function ContactSection({ data, editMode }: Props) {
-  const { control, register, formState: { errors } } = useFormContext();
+  const { control, register, formState: { errors }, getValues } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'contact'
@@ -35,6 +35,7 @@ export default function ContactSection({ data, editMode }: Props) {
                   <CommonTextInput
                     label="Contact Method (e.g. Email)"
                     placeholder="Contact Method (e.g. Email)"
+                    defaultValue={getValues(`contact.${idx}.method`)}
                     {...register(`contact.${idx}.method`, {
                       validate: (value: string) => {
                         for (const test of contactValidationConfig.method) {
@@ -52,6 +53,7 @@ export default function ContactSection({ data, editMode }: Props) {
                   <CommonTextInput
                     label="Contact Value"
                     placeholder="Contact Value"
+                    defaultValue={getValues(`contact.${idx}.value`)}
                     {...register(`contact.${idx}.value`, {
                       validate: (value: string) => {
                         for (const test of contactValidationConfig.value) {

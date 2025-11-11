@@ -12,8 +12,8 @@ interface Props {
 }
 
 export default function AboutSection({ data, editMode }: Props) {
-    const { register, formState: { errors } } = useFormContext();
-    if(!editMode && (Object.values(data).every(value => !value))) {
+    const { register, getValues, formState: { errors }, setValue } = useFormContext();
+    if (!editMode && (Object.values(data).every(value => !value))) {
         return null;
     }
     return (
@@ -25,6 +25,7 @@ export default function AboutSection({ data, editMode }: Props) {
                         <CommonTextInput
                             label="Full Name"
                             placeholder="Full Name"
+                            defaultValue={getValues('about.name')}
                             {...register('about.name', {
                                 validate: (value: string) => {
                                     for (const test of aboutValidationConfig.name) {
@@ -42,6 +43,7 @@ export default function AboutSection({ data, editMode }: Props) {
                         <CommonTextInput
                             label="Professional Title"
                             placeholder="Professional Title"
+                            defaultValue={getValues('about.title')}
                             {...register('about.title', {
                                 validate: (value: string) => {
                                     for (const test of aboutValidationConfig.title) {
@@ -59,6 +61,7 @@ export default function AboutSection({ data, editMode }: Props) {
                         <CommonTextInput
                             label="Email Address"
                             placeholder="Email Address"
+                            defaultValue={getValues('about.email')}
                             {...register('about.email', {
                                 validate: (value: string) => {
                                     for (const test of aboutValidationConfig.email) {
@@ -76,6 +79,7 @@ export default function AboutSection({ data, editMode }: Props) {
                         <CommonTextInput
                             label="Location"
                             placeholder="Location"
+                            defaultValue={getValues('about.location')} 
                             {...register('about.location', {
                                 validate: (value: string) => {
                                     for (const test of aboutValidationConfig.location) {
@@ -93,6 +97,7 @@ export default function AboutSection({ data, editMode }: Props) {
                         <CommonTextareaInput
                             label="Bio"
                             placeholder="Bio"
+                            defaultValue={getValues('about.bio')} // Use `getValues` to get the current value of `bio`
                             {...register('about.bio', {
                                 validate: (value: string) => {
                                     for (const test of aboutValidationConfig.bio) {
@@ -101,6 +106,7 @@ export default function AboutSection({ data, editMode }: Props) {
                                     return true;
                                 }
                             })}
+                            setValue={setValue}
                         />
                         {(errors.about as any)?.bio?.message && (
                             <ErrorMessage message={(errors.about as any).bio.message} />
