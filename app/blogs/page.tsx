@@ -17,7 +17,7 @@ import { openModal } from '@/store/slices/modalSlice';
 import Loading from '../loading';
 
 
-export default function Page({children}: {children: React.ReactNode}) {
+export default function Page({ children }: { children: React.ReactNode }) {
     // Remove Redux blogs usage for infinite query
     // Infinite query for blogs
     const fetchBlogs = useCallback(async ({ pageParam = 0 }) => {
@@ -68,7 +68,7 @@ export default function Page({children}: {children: React.ReactNode}) {
         if (debouncedSearch.trim().length > 0) {
             searchQuery.refetch().then(result => {
                 dispatch(setSearchResults(result.data || []));
-                
+
             });
         } else {
             dispatch(clearSearchResults());
@@ -107,64 +107,66 @@ export default function Page({children}: {children: React.ReactNode}) {
             document.removeEventListener('click', handleClickOutside);
         };
     }, [setShowSearchDropdown]);
-
+    const isUserLoggedIn = useSelector((state: RootState) => state.auth.loggedIn);
     return (
         <>
-        <div className={styles.container}>
-            <div className={styles.headerRow}>
-                <CommonButton
-                    style={{ padding: '0.5rem 1.2rem', fontSize: '1rem', borderRadius: '8px', background: '#222', color: '#fff' }}
-                    onClick={() => {dispatch(openModal({content: 'BlogDetailsEditForm', props: { isNewBlog: true }}));}}
-                >
-                    Add Blog
-                </CommonButton>
-            </div>
-            <div className={styles.searchInputWrapper}>
-                <CommonTextInput
-                    type="text"
-                    placeholder="Search blogs..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className={styles.searchBar}
-                />
-                {showSearchDropdown && search.trim().length > 0 && (
-                    <div className={styles.searchDropdown} ref={searchDropdownRef}>
-                        {searchQuery.isSuccess && (searchResults?.length > 0) ? (
-                            searchResults.map((blog: BlogData, idx: number) => (
-                                <div
-                                    key={idx}
-                                    className={styles.dropdownItem}
-                                    onClick={() => {
-                                        dispatch(setSelectedBlog(blog));
-                                        router.push(`/blogs/${blog.id}`);
-                                    }}
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    <div className={styles.dropdownTitle}>{blog.title}</div>
-                                    <div className={styles.dropdownSubtitle}>{blog.subtitle}</div>
-                                    <div className={styles.dropdownDate}>Nov 9, 2025</div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className={styles.dropdownItem}>{ (searchQuery.isFetching || searchQuery.isLoading) ? "Searching..." : "No blogs found."}</div>
-                        )}
+            <div className={styles.container}>
+                {isUserLoggedIn &&
+                    <div className={styles.headerRow}>
+                        <CommonButton
+                            style={{ padding: '0.5rem 1.2rem', fontSize: '1rem', borderRadius: '8px', background: '#222', color: '#fff' }}
+                            onClick={() => { dispatch(openModal({ content: 'BlogDetailsEditForm', props: { isNewBlog: true } })); }}
+                        >
+                            Add Blog
+                        </CommonButton>
                     </div>
-                )}
+                }
+                <div className={styles.searchInputWrapper}>
+                    <CommonTextInput
+                        type="text"
+                        placeholder="Search blogs..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className={styles.searchBar}
+                    />
+                    {showSearchDropdown && search.trim().length > 0 && (
+                        <div className={styles.searchDropdown} ref={searchDropdownRef}>
+                            {searchQuery.isSuccess && (searchResults?.length > 0) ? (
+                                searchResults.map((blog: BlogData, idx: number) => (
+                                    <div
+                                        key={idx}
+                                        className={styles.dropdownItem}
+                                        onClick={() => {
+                                            dispatch(setSelectedBlog(blog));
+                                            router.push(`/blogs/${blog.id}`);
+                                        }}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <div className={styles.dropdownTitle}>{blog.title}</div>
+                                        <div className={styles.dropdownSubtitle}>{blog.subtitle}</div>
+                                        <div className={styles.dropdownDate}>Nov 9, 2025</div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className={styles.dropdownItem}>{(searchQuery.isFetching || searchQuery.isLoading) ? "Searching..." : "No blogs found."}</div>
+                            )}
+                        </div>
+                    )}
+                </div>
+                <h2 className={styles.subheading}>Latest Blogs</h2>
+                <div className={styles.blogsGrid}>
+                    <Suspense fallback={<Loading />}>
+                        {data?.pages?.flatMap(page => page.blogs).map((blog: BlogData, idx: number) => (
+                            <BlogCard key={blog.id} blog={blog} idx={idx} onClick={() => {
+                                dispatch(setSelectedBlog(blog));
+                            }} />
+                        ))}
+                    </Suspense>
+                    {/* Sentinel element for infinite scroll */}
+                    <div ref={bottomRef} style={{ height: 1 }} />
+                </div>
             </div>
-            <h2 className={styles.subheading}>Latest Blogs</h2>
-            <div className={styles.blogsGrid}>
-                <Suspense fallback={<Loading />}>
-                {data?.pages?.flatMap(page => page.blogs).map((blog: BlogData, idx: number) => (
-                    <BlogCard key={blog.id} blog={blog} idx={idx} onClick={() => {
-                        dispatch(setSelectedBlog(blog));
-                    }} />
-                ))}
-                </Suspense>
-                {/* Sentinel element for infinite scroll */}
-                <div ref={bottomRef} style={{ height: 1 }} />
-            </div>
-        </div>
-        {children}
+            {children}
         </>
     );
 }

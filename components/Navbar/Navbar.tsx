@@ -1,5 +1,5 @@
 "use client";
-import { use, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./Navbar.module.scss";
 import Link from "next/link";
@@ -17,6 +17,8 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const isUserLoggedIn = useSelector((state: any) => state.auth.loggedIn);
   const { addToast } = useToast();
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -34,6 +36,23 @@ export default function Navbar() {
       addToast(err.message || "Logout failed");
     }
   });
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+
+      if (hamburgerRef.current && !hamburgerRef.current.contains(event.target as Node) && dropdownRef && !dropdownRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [setOpen]);
+
+
+
   return (
     <nav className={styles.navbar}>
       <div style={{ display: "flex", justifyContent: 'space-between', width: '100%' }}>
@@ -55,13 +74,14 @@ export default function Navbar() {
         className={styles.hamburger}
         onClick={() => setOpen((prev) => !prev)}
         aria-label="Toggle menu"
+        ref={hamburgerRef}
       >
         <span />
         <span />
         <span />
       </button>
       {open && (
-        <div className={styles.dropdown}>
+        <div className={styles.dropdown} ref={dropdownRef}>
           <ul>
             <li className={pathname === "/" ? styles.activeDropdown : ""}><Link href="/">About Me</Link></li>
             <li className={pathname === "/blogs" ? styles.activeDropdown : ""}><Link href="/blogs">Blogs</Link></li>
