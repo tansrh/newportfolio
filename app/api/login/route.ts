@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Email is required.' }, { status: 400 });
   }
   // Check if email is allowed
-  if (!allowedEmails.includes(email)) {
+  if (!allowedEmails.includes(email) || process.env.CLIENT_EMAIL !== email) {
     return NextResponse.json({ success: false, error: 'Email not allowed.' }, { status: 403 });
   }
 

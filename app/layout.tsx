@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rajesh Choudhary",
-  description: "Journalism | Media | Politics | India",
+  title: process.env.TITLE,
+  description: process.env.DESCRIPTION
 };
 
 export default function RootLayout({
