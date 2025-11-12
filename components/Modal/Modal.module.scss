@@ -24,3 +24,8 @@
     flex-direction: column;
 	align-items: center;
 }
+@media (max-width: 600px) {
+	.modal{
+		max-width: 96vw;
+	}	
+}
