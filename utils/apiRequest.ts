@@ -25,10 +25,10 @@ export async function apiRequest<T = any>(
   });
 
   // Update tokens if present in response headers
-  const newAuthToken = res.headers.get('authorization')?.replace('Bearer ', '');
-  const newRefreshToken = res.headers.get('x-refresh-token');
-  if (newAuthToken) setLocalStorage('authToken', newAuthToken);
-  if (newRefreshToken) setLocalStorage('refreshToken', newRefreshToken);
+  const newAuthToken = res.headers.get('authorization')?.replace('Bearer ', '') || "";
+  const newRefreshToken = res.headers.get('x-refresh-token') || "";
+  if (newAuthToken?.length > 0) setLocalStorage('authToken', newAuthToken);
+  if (newRefreshToken?.length > 0) setLocalStorage('refreshToken', newRefreshToken);
   let data: any = null;
   try{
     data = await res.json();

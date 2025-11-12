@@ -5,6 +5,7 @@ import ErrorMessage from '../Error/ErrorMessage';
 import CommonButton from '../common/CommonButton';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { achievementsValidationConfig } from '../../validationConfig';
+import CommonTextareaInput from '../common/CommonTextareaInput';
 
 interface Props {
   data: AchievementsData[];
@@ -12,14 +13,14 @@ interface Props {
 }
 
 export default function AchievementsSection({ data, editMode }: Props) {
-  const { control, register, formState: { errors }, getValues } = useFormContext();
+  const { control, register, formState: { errors }, getValues, setValue } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'achievements'
   });
-  if(!editMode && (!data || data.length === 0)) {
-        return null;
-    }
+  if (!editMode && (!data || data.length === 0)) {
+    return null;
+  }
   return (
     <section>
       <h2 className={styles.heading}>Achievements</h2>
@@ -65,7 +66,7 @@ export default function AchievementsSection({ data, editMode }: Props) {
                   )}
                 </>
                 <>
-                  <CommonTextInput
+                  <CommonTextareaInput
                     label="Description"
                     placeholder="Description"
                     defaultValue={getValues(`achievements.${idx}.description`)}
@@ -77,6 +78,7 @@ export default function AchievementsSection({ data, editMode }: Props) {
                         return true;
                       }
                     })}
+                    setValue={setValue}
                   />
                   {Array.isArray(errors.achievements) && errors.achievements[idx]?.description && (
                     <ErrorMessage message={(errors.achievements[idx] as any).description.message} />

@@ -18,6 +18,7 @@ import Loading from "./loading";
 import Error from "@/app/error";
 import { useEffect, useMemo } from "react";
 import { useToast } from "@/components/ToastProvider";
+import { logout } from "@/store/slices/authSlice";
 
 const useSavePortfolio = () => {
   const dispatch = useDispatch();
@@ -28,10 +29,19 @@ const useSavePortfolio = () => {
     mutationFn: async (portfolioData: BlogData) => {
       return apiRequest('/api/portfolio', 'PUT', portfolioData);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['portfolio'] }); // Corrected query key type
-      dispatch(setEditMode(false));
-      addToast("Portfolio saved successfully!");
+    onSuccess: (data) => {
+      if (data.success) {
+        queryClient.invalidateQueries({ queryKey: ['portfolio'] }); // Corrected query key type
+        dispatch(setEditMode(false));
+        addToast("Portfolio saved successfully!");
+      }
+      else if (data?.error == "Unauthorized") {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('refreshToken');
+        dispatch(logout());
+        addToast("An error occured. Please login again.");
+      }
+
     },
     onError: (error) => {
       addToast(error.message || "Error saving portfolio");
@@ -67,7 +77,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLoading && portfolio) {
-      methods.reset(portfolio); 
+      methods.reset(portfolio);
     }
   }, [isLoading, portfolio, methods]);
 

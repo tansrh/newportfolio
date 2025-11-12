@@ -11,7 +11,7 @@ import { loginValidationConfig } from '../../validationConfig';
 import { setLocalStorage } from '@/utils/localStorage';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '@/store/slices/modalSlice';
-import { login } from '@/store/slices/authSlice';
+import { login, logout } from '@/store/slices/authSlice';
 import { useToast } from '../ToastProvider';
 
 export default function Login() {
@@ -23,11 +23,19 @@ export default function Login() {
   // React Query mutation for login
   const loginMutation = useMutation({
     mutationFn: (email: string) => apiRequest('/api/login', 'POST', { email }),
-    onSuccess: () => {
-      setStep('otp');
-      setValue('otp', '');
-      setErrorMsg(null);
-      addToast('OTP sent to your email');
+    onSuccess: (data) => {
+      if (data.success) {
+        setStep('otp');
+        setValue('otp', '');
+        setErrorMsg(null);
+        addToast('OTP sent to your email');
+      }
+      else if (data?.error == "Unauthorized") {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('refreshToken');
+        dispatch(logout());
+        addToast("An error occured. Please login again.");
+      }
     },
     onError: (error: any) => {
       setErrorMsg(error?.message || 'Failed to send OTP. Please try again.');
@@ -40,12 +48,20 @@ export default function Login() {
     mutationFn: (payload: { email: string; otp: string }) =>
       apiRequest('/api/verify', 'POST', payload),
     onSuccess: (data) => {
-      setErrorMsg(null);
-      setLocalStorage('authToken', data.authToken);
-      setLocalStorage('refreshToken', data.refreshToken);
-      dispatch(closeModal());
-      dispatch(login({ authToken: data.authToken, refreshToken: data.refreshToken }));
-      addToast('Logged in successfully!');
+      if (data.success) {
+        setErrorMsg(null);
+        setLocalStorage('authToken', data.authToken);
+        setLocalStorage('refreshToken', data.refreshToken);
+        dispatch(closeModal());
+        dispatch(login({ authToken: data.authToken, refreshToken: data.refreshToken }));
+        addToast('Logged in successfully!');
+      }
+      else if (data?.error == "Unauthorized") {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('refreshToken');
+        dispatch(logout());
+        addToast("An error occured. Please login again.");
+      }
     },
     onError: (error: any) => {
       setErrorMsg(error?.message || 'OTP verification failed. Please try again.');

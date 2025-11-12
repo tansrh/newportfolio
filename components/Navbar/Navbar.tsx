@@ -30,7 +30,6 @@ export default function Navbar() {
       localStorage.removeItem('refreshToken');
       dispatch(logout());
       addToast("Logged out successfully");
-      window.location.reload();
     },
     onError: (err: any) => {
       addToast(err.message || "Logout failed");

@@ -137,7 +137,7 @@ function ExperienceItem({ idx, errors, register, remove, control, getValues, set
                     <CommonTextareaInput
                         label="Role Description"
                         placeholder="Role Description"
-                        defaultValue={getValues(`experience.${idx}.description`)} // Use `getValues` to get the current value of `bio`
+                        defaultValue={getValues(`experience.${idx}.description`)}
                         {...register(`experience.${idx}.description`, {
                             validate: (value: string) => {
                                 for (const test of experienceValidationConfig.description) {

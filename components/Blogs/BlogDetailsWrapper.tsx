@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux';
 import { closeModal } from '@/store/slices/modalSlice';
 import ImageWithFallback from '../common/ImageWithFallback';
 import { useToast } from '../ToastProvider';
+import { logout } from '@/store/slices/authSlice';
 
 interface BlogDetailsWrapperProps {
     blog: BlogData;
@@ -42,11 +43,19 @@ function useBlogMutation(): any {
             }
             throw new Error('Invalid mutation type');
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['blogs'] }); // Corrected the query key type
-            dispatch(closeModal());
-            router.push('/blogs');
-            addToast('Blog operation successful!');
+        onSuccess: (data) => {
+            if (data.success) {
+                queryClient.invalidateQueries({ queryKey: ['blogs'] }); // Corrected the query key type
+                dispatch(closeModal());
+                router.push('/blogs');
+                addToast('Blog operation successful!');
+            }
+            else if (data?.error == "Unauthorized") {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('refreshToken');
+                dispatch(logout());
+                addToast("An error occured. Please login again.");
+            }
         },
         onError: (error: any) => {
             addToast(error.message || 'Blog operation failed. Please try again.');
@@ -98,10 +107,10 @@ const BlogDetailsWrapper: React.FC<BlogDetailsWrapperProps> = ({ blog, edit = fa
 };
 
 export function BlogDetailsEditForm({ isNewBlog }: BlogDetailsEditFormProps) {
-    const { register, getValues,  formState: { errors }, handleSubmit, reset, setValue } = useFormContext<BlogData>();
+    const { register, getValues, formState: { errors }, handleSubmit, reset, setValue } = useFormContext<BlogData>();
     const router = useRouter();
     const dispatch = useDispatch();
-    
+
     if (!blogMutation) {
         blogMutation = useBlogMutation();
     }

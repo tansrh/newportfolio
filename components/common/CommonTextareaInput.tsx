@@ -36,7 +36,7 @@ const CommonTextareaInput = forwardRef<any, CommonTextareaInputProps>(({ label, 
     readonly: false,
     height: 400,
     toolbarButtonSize: 'middle',
-    buttons: ['bold', 'italic', 'underline', 'link', 'unlink', 'source'],
+    buttons: "all",
     uploader: {
       insertImageAsBase64URI: true,
     },
