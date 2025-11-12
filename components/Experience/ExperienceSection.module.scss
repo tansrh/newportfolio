@@ -16,3 +16,37 @@
 .editItem {
   @include editItem;
 }
+.experienceItem {
+  margin-bottom: 1.5rem; /* ~24px space between entries */
+  padding-bottom: 1rem; /* ~16px padding */
+  border-bottom: 0.0625rem solid #eee; /* Subtle light gray line (~1px) */
+}
+
+.experienceItem:last-child {
+  border-bottom: none; /* No divider on the last item */
+  margin-bottom: 0;
+}
+
+.experienceHeader {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 0.5rem; /* ~8px space between designation, org, and dates */
+  margin-bottom: 0.625rem; /* ~10px space below header */
+}
+
+.designation {
+  font-weight: 700; /* Bold */
+  color: #000; /* Black */
+  font-size: 1.1rem; /* ~17.6px */
+}
+
+.organization {
+  font-style: italic;
+  color: #333; /* Dark gray */
+}
+
+.dates {
+  color: #666; /* Medium gray */
+  font-size: 1.1rem; /* ~14px */
+  font-weight: bold;
+}

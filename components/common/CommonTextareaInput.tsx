@@ -1,6 +1,7 @@
 // import JoditEditor from "jodit-react";
 import dynamic from "next/dynamic";
 import { TextareaHTMLAttributes, ReactNode, useRef, useState, forwardRef, useMemo } from "react";
+import "@/app/globals.css";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 interface CommonTextareaInputProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: ReactNode;
@@ -69,6 +70,7 @@ const CommonTextareaInput = forwardRef<any, CommonTextareaInputProps>(({ label, 
             setValue(rest.name, newValue);
           }
         }}
+        className="editor"
       />
     </>
   );

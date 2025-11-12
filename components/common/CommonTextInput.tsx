@@ -8,7 +8,7 @@ interface CommonTextInputProps extends InputHTMLAttributes<HTMLInputElement> {
 const CommonTextInput = forwardRef<HTMLInputElement, CommonTextInputProps>(
   ({ label, style, setValue, ...rest }, ref) => {
     return (
-      <div style={{ width: "100%"}}>
+      <div style={{ width: "100%", marginBottom: "0.5rem"}}>
         {label && (
           <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold", fontSize: "1rem", color: "#222" }}>
             {label}

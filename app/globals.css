@@ -28,3 +28,6 @@ body {
 * {
   box-sizing: border-box;
 }
+.editor {
+  margin-bottom: 20px;
+}

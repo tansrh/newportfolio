@@ -46,14 +46,23 @@ export default function ExperienceSection({ data, editMode }: Props) {
                     </CommonButton>
                 </>
             ) : (
-                <ul>
-                    {data.map((exp, idx) => (
-                        <li key={idx}>
-                            <b>{exp.designation}</b> at <b>{exp.organisation}</b> ({exp.from} - {exp.isCurrent ? 'Present' : exp.to})<br />
-                            <span dangerouslySetInnerHTML={{ __html: exp.description || '' }} />
-                        </li>
-                    ))}
-                </ul>
+                
+                    <>
+                        {data.map((exp, idx) => (
+                            <div key={idx} className={styles.experienceItem}>
+                                {/* Header section for title, organization, and dates */}
+                                <div className={styles.experienceHeader}>
+                                    <span className={styles.designation}>{exp.designation}</span>
+                                    <span className={styles.organization}> @{exp.organisation}</span>
+                                    
+                                </div>
+                                <div className={styles.dates}>From: {exp.from} - {exp.isCurrent ? 'Present' : exp.to}</div>
+                                <div
+                                    dangerouslySetInnerHTML={{ __html: exp.description || '' }}
+                                />
+                            </div>
+                        ))}
+                    </>
             )}
         </section>
     );

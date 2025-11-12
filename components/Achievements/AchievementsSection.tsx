@@ -95,14 +95,19 @@ export default function AchievementsSection({ data, editMode }: Props) {
           </CommonButton>
         </>
       ) : (
-        <ul>
+        <>
           {data.map((ach, idx) => (
-            <li key={idx}>
-              <b>{ach.title}</b> ({ach.year})<br />
-              <span dangerouslySetInnerHTML={{ __html: ach.description || '' }} />
-            </li>
+            <div key={idx} className={styles.achievementItem}>
+              <div className={styles.achievementHeader}>
+                <div className={styles.title}>{ach.title}</div>
+                <div className={styles.year}>({ach.year})</div>
+              </div>
+              <div
+                dangerouslySetInnerHTML={{ __html: ach.description || '' }}
+              />
+            </div>
           ))}
-        </ul>
+        </>
       )}
     </section>
   );
