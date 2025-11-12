@@ -110,3 +110,10 @@
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1rem;
 }
+
+.noBlogsMessage {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #555;
+  margin-top: 2rem;
+}

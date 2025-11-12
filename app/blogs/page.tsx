@@ -156,11 +156,23 @@ export default function Page({ children }: { children: React.ReactNode }) {
                 <h2 className={styles.subheading}>Latest Blogs</h2>
                 <div className={styles.blogsGrid}>
                     <Suspense fallback={<Loading />}>
-                        {data?.pages?.flatMap(page => page.blogs).map((blog: BlogData, idx: number) => (
-                            <BlogCard key={blog.id} blog={blog} idx={idx} onClick={() => {
-                                dispatch(setSelectedBlog(blog));
-                            }} />
-                        ))}
+                        {(() => {
+                            const blogs = data?.pages?.flatMap(page => page.blogs) || [];
+                            return blogs.length === 0 ? (
+                                <div className={styles.noBlogsMessage}>No blogs found.</div>
+                            ) : (
+                                blogs.map((blog: BlogData, idx: number) => (
+                                    <BlogCard
+                                        key={blog.id}
+                                        blog={blog}
+                                        idx={idx}
+                                        onClick={() => {
+                                            dispatch(setSelectedBlog(blog));
+                                        }}
+                                    />
+                                ))
+                            );
+                        })()}
                     </Suspense>
                     {/* Sentinel element for infinite scroll */}
                     <div ref={bottomRef} style={{ height: 1 }} />
