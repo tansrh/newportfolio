@@ -44,7 +44,7 @@ const CommonTextareaInput = forwardRef<any, CommonTextareaInputProps>(({ label, 
   }), []);
 
   return (
-    <>
+    <div style={{width: "100%", height: "max-content"}}>
       {label && (
         <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold", fontSize: "1rem", color: "#222" }}>
           {label}
@@ -72,7 +72,7 @@ const CommonTextareaInput = forwardRef<any, CommonTextareaInputProps>(({ label, 
         }}
         className="editor"
       />
-    </>
+    </div>
   );
 });
 
