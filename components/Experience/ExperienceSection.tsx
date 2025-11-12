@@ -7,6 +7,7 @@ import styles from './ExperienceSection.module.scss';
 import ErrorMessage from '../Error/ErrorMessage';
 import { useFormContext, useFieldArray, useWatch } from 'react-hook-form';
 import { experienceValidationConfig } from '../../validationConfig';
+import CommonTextareaInput from '../common/CommonTextareaInput';
 
 interface Props {
     data: ExperienceData[];
@@ -14,12 +15,12 @@ interface Props {
 }
 
 export default function ExperienceSection({ data, editMode }: Props) {
-    const { control, register, formState: { errors }, getValues } = useFormContext();
+    const { control, register, formState: { errors }, getValues, setValue } = useFormContext();
     const { fields, append, remove } = useFieldArray({
         control,
         name: 'experience'
     });
-    if(!editMode && (!data || data.length === 0)) {
+    if (!editMode && (!data || data.length === 0)) {
         return null;
     }
     return (
@@ -37,6 +38,7 @@ export default function ExperienceSection({ data, editMode }: Props) {
                             remove={remove}
                             control={control}
                             getValues={getValues}
+                            setValue={setValue}
                         />
                     ))}
                     <CommonButton type="button" style={{ marginTop: '1rem' }} onClick={() => append({ organisation: '', designation: '', from: '', to: '', isCurrent: false, description: '' })}>
@@ -64,9 +66,10 @@ interface ExperienceItemProps {
     remove: (idx: number) => void;
     control: any;
     getValues: any;
+    setValue?: any;
 }
 
-function ExperienceItem({ idx, errors, register, remove, control, getValues }: ExperienceItemProps) {
+function ExperienceItem({ idx, errors, register, remove, control, getValues, setValue }: ExperienceItemProps) {
     const isCurrent = useWatch({ control, name: `experience.${idx}.isCurrent` });
     return (
         <div key={idx} className={styles.editItem}>
@@ -131,10 +134,10 @@ function ExperienceItem({ idx, errors, register, remove, control, getValues }: E
                 )}
                 <CommonCheckboxInput label="Current" {...register(`experience.${idx}.isCurrent`)} />
                 <>
-                    <CommonTextInput
+                    <CommonTextareaInput
                         label="Role Description"
                         placeholder="Role Description"
-                        defaultValue={getValues(`experience.${idx}.description`)}
+                        defaultValue={getValues(`experience.${idx}.description`)} // Use `getValues` to get the current value of `bio`
                         {...register(`experience.${idx}.description`, {
                             validate: (value: string) => {
                                 for (const test of experienceValidationConfig.description) {
@@ -143,6 +146,7 @@ function ExperienceItem({ idx, errors, register, remove, control, getValues }: E
                                 return true;
                             }
                         })}
+                        setValue={setValue}
                     />
                     {Array.isArray(errors.experience) && errors.experience[idx]?.description && (
                         <ErrorMessage message={(errors.experience[idx] as any).description.message} />
