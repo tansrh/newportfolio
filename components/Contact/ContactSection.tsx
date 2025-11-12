@@ -20,9 +20,9 @@ export default function ContactSection({ data, editMode }: Props) {
     name: 'contact'
   });
   const dispatch = useDispatch();
-  if(!editMode && (!data || data.length === 0)) {
-        return null;
-    }
+  // if(!editMode && (!data || data.length === 0)) {
+  //       return null;
+  //   }
   return (
     <section>
       <h2 className={styles.heading}>Contact</h2>
