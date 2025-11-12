@@ -31,6 +31,8 @@ export default function Page({ children }: { children: React.ReactNode }) {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
+        isLoading,
+        isFetching
     } = useInfiniteQuery({
         queryKey: ['blogs'],
         queryFn: fetchBlogs,
@@ -155,11 +157,6 @@ export default function Page({ children }: { children: React.ReactNode }) {
                     )}
                 </div>
                 <h2 className={styles.subheading}>Latest Blogs</h2>
-                {
-                    (blogs.length === 0 && !isFetchingNextPage) && (
-                        <div className={styles.noBlogsMessage}>No blogs found.</div>
-                    )
-                }
                 <div className={styles.blogsGrid}>
                     <Suspense fallback={<Loading />}>
                         {
@@ -178,6 +175,12 @@ export default function Page({ children }: { children: React.ReactNode }) {
                     {/* Sentinel element for infinite scroll */}
                     <div ref={bottomRef} style={{ height: 1 }} />
                 </div>
+                {
+                    (blogs.length === 0 && !isFetchingNextPage && !isLoading && !isFetching) ? (
+                        <div className={styles.noBlogsMessage}>No blogs found.</div>
+                    ) : (isLoading || isFetching) ? (<div className={styles.noBlogsMessage}>Getting Blogs...</div>) : <></>
+                    
+                }
             </div>
             {children}
         </>
