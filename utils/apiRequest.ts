@@ -1,7 +1,7 @@
 // utils/apiRequest.ts
 
 import { getLocalStorage, setLocalStorage } from "./localStorage";
-
+import 'dotenv/config';
 export async function apiRequest<T = any>(
   endpoint: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
@@ -10,6 +10,7 @@ export async function apiRequest<T = any>(
 ): Promise<T> {
   const authToken = getLocalStorage('authToken');
   const refreshToken = getLocalStorage('refreshToken');
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
@@ -17,7 +18,7 @@ export async function apiRequest<T = any>(
     ...customHeaders,
   };
 
-  const res = await fetch(endpoint, {
+  const res = await fetch(`${baseUrl}${endpoint}`, {
     method,
     headers,
     body: method !== 'GET' ? JSON.stringify(body) : undefined,
