@@ -28,8 +28,14 @@ export async function apiRequest<T = any>(
   const newRefreshToken = res.headers.get('x-refresh-token');
   if (newAuthToken) setLocalStorage('authToken', newAuthToken);
   if (newRefreshToken) setLocalStorage('refreshToken', newRefreshToken);
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'API error');
+  let data: any = null;
+  try{
+    data = await res.json();
+  }
+  catch(e){
+    data = {error: e};
+  }
+  
+  // if (!res.ok) throw new Error(data?.error || 'API error');
   return data;
 }

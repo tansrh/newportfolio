@@ -48,7 +48,7 @@ export default function Home() {
     queryKey: ['portfolio'],
     queryFn: async () => {
       const response = await apiRequest('/api/portfolio', 'GET');
-      return response.portfolio;
+      return response.portfolio ?? {};
     },
   });
   const defaultPortfolio: any = useMemo(() => ({

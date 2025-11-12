@@ -59,7 +59,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
         queryFn: async () => {
             if (!debouncedSearch.trim()) return [];
             const data = await apiRequest(`/api/blogs?search=${encodeURIComponent(debouncedSearch)}`, 'GET');
-            return data.blogs;
+            return data.blogs || [];
         },
         enabled: false, // Only run when manually triggered
     });
@@ -108,6 +108,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
         };
     }, [setShowSearchDropdown]);
     const isUserLoggedIn = useSelector((state: RootState) => state.auth.loggedIn);
+    const blogs = data?.pages?.flatMap(page => page.blogs) || [];
     return (
         <>
             <div className={styles.container}>
@@ -154,25 +155,25 @@ export default function Page({ children }: { children: React.ReactNode }) {
                     )}
                 </div>
                 <h2 className={styles.subheading}>Latest Blogs</h2>
+                {
+                    (blogs.length === 0 && !isFetchingNextPage) && (
+                        <div className={styles.noBlogsMessage}>No blogs found.</div>
+                    )
+                }
                 <div className={styles.blogsGrid}>
                     <Suspense fallback={<Loading />}>
-                        {(() => {
-                            const blogs = data?.pages?.flatMap(page => page.blogs) || [];
-                            return blogs.length === 0 ? (
-                                <div className={styles.noBlogsMessage}>No blogs found.</div>
-                            ) : (
-                                blogs.map((blog: BlogData, idx: number) => (
-                                    <BlogCard
-                                        key={blog.id}
-                                        blog={blog}
-                                        idx={idx}
-                                        onClick={() => {
-                                            dispatch(setSelectedBlog(blog));
-                                        }}
-                                    />
-                                ))
-                            );
-                        })()}
+                        {
+                            blogs.map((blog: BlogData, idx: number) => (
+                                <BlogCard
+                                    key={blog.id}
+                                    blog={blog}
+                                    idx={idx}
+                                    onClick={() => {
+                                        dispatch(setSelectedBlog(blog));
+                                    }}
+                                />
+                            ))
+                        }
                     </Suspense>
                     {/* Sentinel element for infinite scroll */}
                     <div ref={bottomRef} style={{ height: 1 }} />

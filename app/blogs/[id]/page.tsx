@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../../store/rootStore';
 import BlogDetailsWrapper from '../../../components/Blogs/BlogDetailsWrapper';
@@ -23,7 +23,7 @@ export default function Page() {
             const result = await apiRequest(`/api/blogs/${id}`, 'GET');
             if (result.success && result.blog) {
                 dispatch(setSelectedBlog(result.blog));
-                return result.blog;
+                return result.blog ?? {};
             }
             throw new Error('Blog not found.');
         },
@@ -34,7 +34,7 @@ export default function Page() {
     if (isLoading) {
         return <Loading />;
     }
-    if (!blogToShow) {
+    if (!blogToShow && !isLoading) {
         notFound();
     }
     return <BlogDetailsWrapper blog={blogToShow} edit={isUserLoggedIn} />;
