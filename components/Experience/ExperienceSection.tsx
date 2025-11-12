@@ -8,7 +8,7 @@ import ErrorMessage from '../Error/ErrorMessage';
 import { useFormContext, useFieldArray, useWatch } from 'react-hook-form';
 import { experienceValidationConfig } from '../../validationConfig';
 import CommonTextareaInput from '../common/CommonTextareaInput';
-
+import { formatDateHumanReadable } from '@/utils/dateUtils';
 interface Props {
     data: ExperienceData[];
     editMode: boolean;
@@ -56,7 +56,7 @@ export default function ExperienceSection({ data, editMode }: Props) {
                                     <span className={styles.organization}> @{exp.organisation}</span>
                                     
                                 </div>
-                                <div className={styles.dates}>From: {exp.from} - {exp.isCurrent ? 'Present' : exp.to}</div>
+                                <div className={styles.dates}>From: {formatDateHumanReadable(exp.from)} - {exp.isCurrent ? 'Present' : formatDateHumanReadable(exp.to!)}</div>
                                 <div
                                     dangerouslySetInnerHTML={{ __html: exp.description || '' }}
                                 />
